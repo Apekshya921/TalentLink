@@ -1,0 +1,21 @@
+import jwt from 'jsonwebtoken'
+const authMiddleware=(req,res,next)=>{
+    try{
+        const authHeader=req.headers.authorization
+        console.log("Authorization header:", authHeader)
+        if(!authHeader){
+             return res.status(401).json({
+        message: "Authentication required",
+      })
+        }
+const token=authHeader.split(" ")[1]
+   const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+    req.user = decoded   
+    next()
+ }
+catch(err){
+    res.status(500).json({message:err.message})
+}
+}
+export default authMiddleware
